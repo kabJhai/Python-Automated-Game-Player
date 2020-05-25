@@ -17,12 +17,15 @@ gameHandle = 0
 for (handle,text) in windowList:
     if 'chrome://dino/' in text:
         gameHandle = handle
+
 if gameHandle != 0:
     pass
-
+else:
+    exit(-1)
 #Get the extact position of the window
-position = win32gui.GetWindowRect(gameHandle)
-print(position)
-#Take screenshot
-screenshot = ImageGrab.grab(bbox=position) #give the location to take screenshot from
-screenshot.show()
+while True:
+    position = win32gui.GetWindowRect(gameHandle)
+    #Take screenshot
+    screenshot = ImageGrab.grab(bbox=position) #give the location to take screenshot from
+    #Convert the screenshot to numpy array
+    screenshot = np.array(screenshot)
