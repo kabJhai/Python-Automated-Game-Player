@@ -24,5 +24,5 @@ if gameHandle != 0:
 position = win32gui.GetWindowRect(gameHandle)
 print(position)
 #Take screenshot
-#screenshot = ImageGrab.grab(bbox=(0 ,0 , 500, 500)) #give the location to take screenshot from
-#screenshot.show()
+screenshot = ImageGrab.grab(bbox=position) #give the location to take screenshot from
+screenshot.show()
