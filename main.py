@@ -28,4 +28,15 @@ while True:
     #Take screenshot
     screenshot = ImageGrab.grab(bbox=position) #give the location to take screenshot from
     #Convert the screenshot to numpy array
-    screenshot = np.array(screenshot)
+    screenshot_array = np.array(screenshot)
+    #Show the image
+    cv2.imshow("Screen",screenshot_array)
+    #Wait for 25 milisecond to take another
+    key = cv2.waitKey(25)
+    
+    #Break when 'A' is pressed on the keyboard
+    if key == 65:
+        break
+
+    
+cv2.destroyAllWindows()
