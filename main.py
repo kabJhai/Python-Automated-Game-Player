@@ -13,7 +13,7 @@ def enum_win(windowHandle, result):
 
 #Get the list of open windows and p
 win32gui.EnumWindows(enum_win, toplist)
-
+ 
 #To get the handle of the game
 gameHandle = 0
 for (handle,text) in windowList:
@@ -25,7 +25,8 @@ if gameHandle != 0:
 else:
     print('Window not available')
     exit(-1)
-
+#Set the game window to forground
+win32gui.SetForegroundWindow(gameHandle)
 #Get the extact position of the window
 while True:
     position = win32gui.GetWindowRect(gameHandle)
@@ -33,9 +34,6 @@ while True:
     #Press the space key on the keyboard
     win32api.SendMessage(gameHandle, win32con.WM_KEYDOWN, win32con.VK_SPACE)
     win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_SPACE)
-    #Sleep for some time
-    time.sleep(1)
-
 
     #Take screenshot
     screenshot = ImageGrab.grab(bbox=position) #give the location to take screenshot from
