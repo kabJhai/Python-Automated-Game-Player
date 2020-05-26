@@ -29,7 +29,6 @@ else:
     print('Window not available')
     exit(-1)
 #Set the game window to forground
-
 win32gui.SetForegroundWindow(gameHandle)
 kernelOpen = np.ones((5,5))
 kernelClose = np.ones((20,20))
@@ -55,13 +54,17 @@ while True:
     #To hide noise
     maskOpen = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernelOpen)
     maskClose = cv2.morphologyEx(maskOpen,cv2.MORPH_CLOSE,kernelClose)
-    #contours = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    #contours = imutils.grab_contours(contours)
-    # for i in contours:
-    #     if area > 50:
-    #         cv2.drawContours(screenshot_array2,i,-1,(0,255,0),3)
+    contours, h = cv2.findContours(maskClose.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(screenshot_array2,contours,-1,(0,255,0),3)
+    for i in range(len(contours)):
+        x,y,w,h = cv2.boundingRect(contours[i])
+        cv2.rectangle(screenshot_array2,(x,y),(x+w,y+h),(0,0,255),2)
+        if i == len(contours)-1:
+            cv2.putText(screenshot_array2,"Dino",(x,y+h+20),cv2.FONT_HERSHEY_COMPLEX,1,(233,244,255))
+        else:
+            cv2.putText(screenshot_array2,str(i),(x,y+h+20),cv2.FONT_HERSHEY_COMPLEX,1,(233,244,255))
     #Show the image
-    cv2.imshow("Screen",maskClose)
+    cv2.imshow("Screen",screenshot_array2)
     #Wait for 25 milisecond to take another
     key = cv2.waitKey(25)
 
