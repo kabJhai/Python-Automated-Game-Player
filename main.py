@@ -7,6 +7,8 @@ import win32con
 import time
 toplist = []
 windowList = []
+
+
 def enum_win(windowHandle, result):
     windowText = win32gui.GetWindowText(windowHandle)
     windowList.append((windowHandle,windowText))
@@ -26,6 +28,7 @@ else:
     print('Window not available')
     exit(-1)
 #Set the game window to forground
+
 win32gui.SetForegroundWindow(gameHandle)
 #Get the extact position of the window
 while True:
@@ -34,15 +37,25 @@ while True:
     #Press the space key on the keyboard
     win32api.SendMessage(gameHandle, win32con.WM_KEYDOWN, win32con.VK_SPACE)
     win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_SPACE)
-
+    
     #Take screenshot
     screenshot = ImageGrab.grab(bbox=position) #give the location to take screenshot from
     #Convert the screenshot to numpy array
-    screenshot_array = np.array(screenshot)
+    screenshot_main = np.array(screenshot)
     #Convert from RGB to BGR for CV2
-    screenshot_array = cv2.cvtColor(screenshot_array,cv2.COLOR_RGB2BGR)
+    screenshot_array = cv2.cvtColor(screenshot_main,cv2.COLOR_RGB2HSV)
+    screenshot_array2 = cv2.cvtColor(screenshot_main,cv2.COLOR_RGB2BGR)
+    #To get the color of the images for masking
+    low = np.array([0,0,166])
+    high = np.array([0,0,172])
+    mask = cv2.inRange(screenshot_array,low,high)
+    contours , location = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    for i in contours:
+        area = cv2.contourArea(i)
+        if area > 50:
+            cv2.drawContours(screenshot_array2,i,-1,(0,255,0),3)
     #Show the image
-    cv2.imshow("Screen",screenshot_array)
+    cv2.imshow("Screen",screenshot_array2)
     #Wait for 25 milisecond to take another
     key = cv2.waitKey(25)
 
