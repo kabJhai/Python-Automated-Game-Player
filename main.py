@@ -6,10 +6,9 @@ import win32api #To get api of the elements
 import win32con
 import time
 import imutils
+
 toplist = []
 windowList = []
-
-
 def enum_win(windowHandle, result):
     windowText = win32gui.GetWindowText(windowHandle)
     windowList.append((windowHandle,windowText))
@@ -28,6 +27,12 @@ if gameHandle != 0:
 else:
     print('Window not available')
     exit(-1)
+#Begin the game
+win32api.SendMessage(gameHandle, win32con.WM_KEYDOWN, win32con.VK_SPACE)
+win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_SPACE)
+time.sleep(2)
+#Resize the window
+win32gui.MoveWindow(gameHandle, 0, 0,788,498, True)
 #Set the game window to forground
 win32gui.SetForegroundWindow(gameHandle)
 kernelOpen = np.ones((3,3))
@@ -37,9 +42,11 @@ isFirst = True
 firstX = 0
 while True:
     position = win32gui.GetWindowRect(gameHandle)
+    print(position)
     #Take screenshot
     screenshot = ImageGrab.grab(bbox=position) #give the location to take screenshot from
     #Convert the screenshot to numpy array
+    
     screenshot_main = np.array(screenshot)
     #Convert from RGB to BGR for CV2
     screenshot_array = cv2.cvtColor(screenshot_main,cv2.COLOR_RGB2HSV)
@@ -52,7 +59,6 @@ while True:
     maskOpen = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernelOpen)
     maskClose = cv2.morphologyEx(maskOpen,cv2.MORPH_CLOSE,kernelClose)
     contours, h = cv2.findContours(maskClose.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-    #cv2.drawContours(screenshot_array2,contours,-1,(0,255,0),3)
     xs = []
     for i in range(len(contours)):
         x,y,w,h = cv2.boundingRect(contours[i])
@@ -71,6 +77,12 @@ while True:
         if(i <= width+100):
             win32api.SendMessage(gameHandle, win32con.WM_KEYDOWN, win32con.VK_SPACE)
             win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_SPACE)
+    
+    #cv2.WINDOW_NORMAL makes the output window resizealbe
+    cv2.namedWindow('Screen', cv2.WINDOW_NORMAL)
+ 
+    #resize the window according to the screen resolution
+    cv2.resizeWindow('Screen', 680, 440)
     #Show the image
     cv2.imshow("Screen",screenshot_array2)
     #Wait for 25 milisecond to take another
