@@ -31,6 +31,8 @@ else:
 #Set the game window to forground
 
 win32gui.SetForegroundWindow(gameHandle)
+kernelOpen = np.ones((5,5))
+kernelClose = np.ones((20,20))
 #Get the extact position of the window
 while True:
     position = win32gui.GetWindowRect(gameHandle)
@@ -50,18 +52,16 @@ while True:
     low = np.array([0,0,166])
     high = np.array([0,0,172])
     mask = cv2.inRange(screenshot_array,low,high)
-    contours = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    contours = imutils.grab_contours(contours)
-    for i in contours:
-        area = cv2.contourArea(i)
-        M = cv2.moments(i)
-        cx = int(M['m00'])
-        cy = int(M['m01'])
-        cv2.circle(screenshot_array2,(cx,cy),7,(255,255,255),-1)
-        if area > 50:
-            cv2.drawContours(screenshot_array2,i,-1,(0,255,0),3)
+    #To hide noise
+    maskOpen = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernelOpen)
+    maskClose = cv2.morphologyEx(maskOpen,cv2.MORPH_CLOSE,kernelClose)
+    #contours = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    #contours = imutils.grab_contours(contours)
+    # for i in contours:
+    #     if area > 50:
+    #         cv2.drawContours(screenshot_array2,i,-1,(0,255,0),3)
     #Show the image
-    cv2.imshow("Screen",screenshot_array2)
+    cv2.imshow("Screen",maskClose)
     #Wait for 25 milisecond to take another
     key = cv2.waitKey(25)
 
