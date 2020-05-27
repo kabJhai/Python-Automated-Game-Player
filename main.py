@@ -42,7 +42,7 @@ win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_F5)
 time.sleep(1)
 win32api.SendMessage(gameHandle, win32con.WM_KEYDOWN, win32con.VK_SPACE)
 win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_SPACE)
-time.sleep(4)
+time.sleep(2)
 
 while True:
     position = win32gui.GetWindowRect(gameHandle)
@@ -74,24 +74,24 @@ while True:
             cv2.rectangle(screenshot_array2,(x,y),(x+w,y+h),(0,255,0),2)
             cv2.putText(screenshot_array2,"Dino",(x,y+h+20),cv2.FONT_HERSHEY_COMPLEX,1,(233,244,255))
         elif(len(contours)>1):
-                xs[i] = [x,y]
+                xs[i] = [x,y,w]
                 cv2.rectangle(screenshot_array2,(x,y),(x+w,y+h),(0,0,255),4)
-                cv2.putText(screenshot_array2,str(h),(x,y+h+20),cv2.FONT_HERSHEY_COMPLEX,1,(233,244,255))
     for i in xs.values():
         if((i[0] <= dinoWidth+110) and((dinoY < i[1]) or (((dinoY - i[1])<=8)and((dinoY - i[1])>=0)))):
                 win32api.SendMessage(gameHandle, win32con.WM_KEYDOWN, win32con.VK_SPACE)
+                time.sleep(0.05)
                 win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_SPACE)
-                print(i[1],dinoY)    
+                cv2.putText(screenshot_array2,str("Jump"),(20,(dinoY - 100)),cv2.FONT_HERSHEY_TRIPLEX,1,(0,250,120))
         elif((i[0] <= dinoWidth+110) and(((i[1]-dinoY)<0))):
-                print("Bird",i[1],dinoY)
+                cv2.putText(screenshot_array2,str("Bow"),(20,(dinoY - 100)),cv2.FONT_HERSHEY_TRIPLEX,1,(0,250,120))
                 win32api.SendMessage(gameHandle, win32con.WM_KEYDOWN, win32con.VK_DOWN)
-                time.sleep(0.4)
+                time.sleep(0.2)
                 win32api.SendMessage(gameHandle, win32con.WM_KEYUP, win32con.VK_DOWN)
     #cv2.WINDOW_NORMAL makes the output window resizealbe
     cv2.namedWindow('Screen', cv2.WINDOW_NORMAL)
  
     #resize the window according to the screen resolution
-    cv2.resizeWindow('Screen', 480, 240)
+    cv2.resizeWindow('Screen', 640, 400)
     #Show the image
     cv2.imshow("Screen",screenshot_array2)
     #Wait for 25 milisecond to take another
