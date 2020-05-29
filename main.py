@@ -1,11 +1,10 @@
 import cv2.cv2
-import numpy as np
-from PIL import ImageGrab
+import numpy as np #For image to matrix conversion
+from PIL import ImageGrab #To get access to the screenshot
 import win32gui #To access the Windows GUI
 import win32api #To get api of the elements
-import win32con
+import win32con #To perform keyboard press action
 import time
-import imutils
 #To access the windows running
 toplist = []
 windowList = []
